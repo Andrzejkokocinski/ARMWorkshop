@@ -1,0 +1,29 @@
+{
+  "type": "Microsoft.Network/virtualNetworks",
+  "name": "[concat(parameters('vnetname'), copyIndex())]",
+  "apiVersion": "2018-04-01",
+  "copy":{
+    "count": 2,
+    "name": "vnetloop"
+  },
+  "location": "[resourceGroup().location]",
+  "properties": {
+    "addressSpace": {
+      "addressPrefixes": [
+        "[parameters('addressPrefix')]"
+      ]
+    },
+    "copy": [
+      {
+        "name": "subnets",
+        "count": 2,
+        "input": {
+          "name": "[concat('subnet-', copyIndex('subnets'))]",
+          "properties": {
+            "addressPrefix": "[variables('subnetAddressPrefix')[copyIndex('subnets')]]"
+          }
+        }
+      }
+    ]
+  }
+}
